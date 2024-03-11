@@ -19,7 +19,7 @@ Optimal, the [SCUBA](https://github.com/USTCwangsheng/pySCUBA) software can be d
 
 ## Quick start
 
-First, you need to download the weights file from https://biocomp.ustc.edu.cn/servers/downloads/checkpoint_clean.pt and save it under the `/savedir/sketch_mask90_domain_tune_noceaatype_minbatch_sketch_mask/checkpoint/` path.
+First, you need to download the weights file from https://biocomp.ustc.edu.cn/servers/downloads/checkpoint_clean.pt and save it under the `/savedir/priorDDPM_full_ESM_GAN/checkpoint/` path.
 
 Input for `run.sh` is a text file that contains controls for each design.
 The following options are suggested to be manually changed according to your needs:
