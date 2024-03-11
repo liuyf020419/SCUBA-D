@@ -35,7 +35,7 @@ noising_mode_dict = {
         }
 
 
-model_name = 'sketch_mask90_domain_tune_noceaatype_minbatch_sketch_mask'
+model_name = 'priorDDPM_full_ESM_GAN'
 
 def build_parser():
     parser = argparse.ArgumentParser(description='SCUBA_Diff')
