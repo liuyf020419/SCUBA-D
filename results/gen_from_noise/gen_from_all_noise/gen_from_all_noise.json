@@ -1,0 +1,13 @@
+{
+    "global_config":{
+        "input_file": "",
+        "output_prefix": "results/gen_from_noise/gen_from_all_noise",
+        "mode": "gen_from_noise"
+    },
+    "gen_from_noise": {
+        "target_sstype": null,
+        "chain_config":{
+            "A": "120"
+        }
+    }
+}

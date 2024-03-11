@@ -1,0 +1,4 @@
+demo_json/gen_from_noise/gen_from_all_noise.json
+demo_json/gen_from_noise/gen_from_noise_partial_fixed.json
+demo_json/gen_from_noise/gen_from_all_sstype.json
+demo_json/refine_prior/structure_refine.json

@@ -1,0 +1,12 @@
+metadata_version: 1
+name: 'SCUBA-D: De novo protein design with a denoising diffusion network independent
+  of pre-trained structure prediction models'
+description: SCUBA-D is a method based on deep learning for generating protein structure
+  backbone. Here we published the source code and the demos for SCUBA-D.
+authors:
+- name: Yufeng Liu
+  affiliations:
+  - name: University of Science and Technology of China
+corresponding_contributor:
+  name: Haiyan Liu
+  email: hyliu@ustc.edu.cn

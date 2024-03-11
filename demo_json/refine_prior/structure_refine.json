@@ -1,0 +1,12 @@
+{
+    "global_config":{
+        "input_file": "demo_json/refine_prior/input.pdb",
+        "output_prefix": "results/refine_prior/structure_refine",
+        "mode": "refine_prior"
+    },
+    "refine_prior": {
+        "chain_config":{
+            "A": "UNFIX"
+        }   
+    }
+}

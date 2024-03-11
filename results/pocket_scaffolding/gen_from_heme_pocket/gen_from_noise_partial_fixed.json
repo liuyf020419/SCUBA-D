@@ -1,0 +1,19 @@
+{
+    "global_config":{
+        "input_file": "demo_json/gen_from_noise/heme.pdb",
+        "output_prefix": "results/pocket_scaffolding/gen_from_heme_pocket",
+        "mode": "gen_from_noise"
+    },
+    "gen_from_noise": {
+        "target_sstype": null,
+        "ss_noise_scale": [5.0, 8.0],
+        "chain_config":{
+            "A": "40;5;5_6;1;7_8;1;9_10;10;19_20;2;22_24;2;26_30;8;38_39;15;54_55;1;56_57;7;64_65;2;67_69;4;73_74;2;76_78;2;80_81;10;91_92;2;94_95;1;96_97;10;30"
+        },
+        "rigid_groups": {
+            "A": {
+                "1": "5_6;7_8;9_10;19_20;22_24;26_30;38_39;54_55;56_57;64_65;67_69;73_74;76_78;80_81;91_92;94_95;96_97"
+            }
+        }
+    }
+}

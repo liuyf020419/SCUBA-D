@@ -1,0 +1,480 @@
+{
+    "data": {
+        "train_mode": true,
+        "base_path": "/train14/superbrain/lhchen/protein/diffusion/ConfGF/ConfGF_Protein_CATH/PDB",
+        "train_list": "/train14/superbrain/yfliu25/dataset/domain_list/train_final_model_val2000.txt",
+        "eval_list": "/train14/superbrain/yfliu25/dataset/domain_list/old_val_for_new_val_2000.txt",
+        "test_list": "/train14/superbrain/yfliu25/dataset/domain_list/old_val_for_new_val_2000.txt",
+        "pdb_data_path": "/train14/superbrain/lhchen/for_yfliu25/local_sd",
+        "chain_map_file": "/ps2/hyperbrain/lhchen/data/alphafold2/processed_data/colabfold_search_result/full_chain/pdb_chain_map_list.csv",
+        "esm1b_root": "/train14/superbrain/yfliu25/dataset/esm_rep/esm1b_cath",
+        "esm1b_LMhead_ckpt": "/train14/superbrain/yfliu25/structure_refine/joint_prior_ddpm_tune_v_ceESM_Dnet/protdiff/models/esm_utils/esm1b_projection_head.pt",
+        "esm1b_stat_meanstd_file": "/train14/superbrain/yfliu25/structure_refine/joint_prior_ddpm_tune_v_ceESM_Dnet/protdiff/models/esm_utils/esm1b_None_dict.npy",
+        "common": {
+            "batch_size": 3,
+            "crop_size": 128,
+            "noising_mode": "white_noising+condition_white_noising+white_ss_noising+white_ss_noising+FG_map_noising+FG_map_noising+FG_map_noising+FG_map_noising"
+        },
+        "white_noise": {
+            "ca_noise_scale": [2, 8],
+            "white_noise_scale": 25
+        },
+        "white_ss_noise": {
+            "ca_noise_scale": [5, 8],
+            "quat_noise_scale": 0.5,
+            "sketch_data": true,
+            "ss_mask_p_range": [0.3, 0.7],
+            "loop_mask_p_range": [0.8, 0.9]
+        },
+        "condition_fix": {
+            "p_spatial": [0.4, 0.9],
+            "p_rand": [0.4, 0.9],
+            "random_block_len": [5, 10],
+            "p_lin": [0.4, 0.9]
+        }
+    },
+    "model": {
+        "global_config": {
+            "prior_net": "iparefine",
+            "p_train_without_prior": 0.0,
+            "is_Dnet": true,
+            "Dnet_type": "localenv_transformer",
+            "is_Dnet2": true,
+            "Dnet2_type": "transformer",
+            "D_update_freq": 5,
+            "weight_gan_with_t": true,
+            "max_len": 128,
+            "degree": false,
+            "enlarge_gap": true,
+            "position_scale": 0.1,
+            "masked_weight": 0.8,
+            "unmasked_weight": 0.2,
+            "is_inference": false,
+            "deterministic": false,
+            "zero_init": true,
+            "subbatch_size": 0,
+            "esm_num": 1280,
+            "diffusion":{
+                "betas": [1e-4, 5e-2],
+                "T": 400
+            },
+            "fape": {
+                "clamp_distance": 10.0,
+                "clamp_type": "relu",
+                "loss_unit_distance": 10.0,
+                "clamp_weight": 0.9,
+                "traj_weight": 0.5
+            },
+            "violation_config": {
+                "violation_tolerance_factor":12.0,
+                "clash_overlap_tolerance":1.5
+            },
+            "loss_weight":{
+                "prior_fape_loss": 0.5,
+                "prior_ditogram_classify_loss": 0.1,
+                "prior_esm_single_pred_loss": 0.1,
+                "diff_fape_loss": 1.0,
+                "diff_esm_single_pred_loss": 0.2,
+                "diff_ditogram_classify_loss": 0.4,
+                "diff_ditogram_aux_classify_loss": 0.4,
+                "diff_violation_loss": 0.1,
+                "loss_esm_ce": 0.0,
+                "diff_esm_single_ce_loss": 0.0,
+                "disc1": 0.05,
+                "disc2": 0.05
+            }
+        },
+        "refine_net": {
+            "pair_encoder": {
+                "pair_res_rel": 32,
+                "pair_res_channel": 64,
+                "pair_chain_rel": 5,
+                "pair_chain_channel": 64,
+                "encode_FG": true,
+                "rbf_encode": true,
+                "num_rbf": 16,
+                "tri_encode": true,
+                "tri_num": 4,
+                "pair_FG_channel": 128,
+                "condition_embedding": true,
+                "pair_channel": 256,
+                "dropout": 0.1
+            },
+            "denoising_2d_block": {
+                "pair_channel":256,
+                "layers_2d": 4,
+                "evo_former_checkpoint": 4,
+                "evoformer_block": {
+                    "triangle_attention_starting_node": {
+                        "dropout_rate": 0.25,
+                        "gating": true,
+                        "num_head": 4,
+                        "orientation": "per_row",
+                        "shared_dropout": true,
+                        "out_single": false
+                    },
+                    "triangle_attention_ending_node": {
+                        "dropout_rate": 0.25,
+                        "gating": true,
+                        "num_head": 4,
+                        "orientation": "per_column",
+                        "shared_dropout": true,
+                        "out_single": false
+                    },
+                    "triangle_multiplication_outgoing": {
+                        "dropout_rate": 0.25,
+                        "equation": "...ikc,...jkc->...ijc",
+                        "outgoing":true,
+                        "num_intermediate_channel": 256,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    },
+                    "triangle_multiplication_incoming": {
+                        "dropout_rate": 0.25,
+                        "equation": "...kjc,...kic->...ijc",
+                        "outgoing":false,
+                        "num_intermediate_channel": 256,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    },
+                    "pair_transition": {
+                        "dropout_rate": 0.0,
+                        "num_intermediate_factor": 4,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    } 
+                }
+            },
+            "distogram_pred": {
+                "distogram_args": [0, 22, 64],
+                "pred_all_dist": true,
+                "atom3_dist": false,
+                "ca_dist": true
+            },
+            "esm_single_pred": {
+                "pred_from_hidden": false,
+                "hidden_num": 512,
+                "num_residual_block": 1,
+                "cnn_encoder": true,
+                "cnn_num_residual_block": 4,
+                "cnn_dropout": 0.1,
+                "transformer_decoder": true,
+                "transformer_config":
+                {
+                    "attention_heads":4,
+                    "dropout": 0.1,
+                    "layers": 4
+                },
+                "gvp_esm_single_pred_config":
+                {   
+                    "final_pred": false,
+                    "traj_weight": 0.5,
+                    "dropout": 0.1,
+                    "encoder_layers": 4,
+                    "encoder_embed_dim": 512,
+                    "encoder_ffn_embed_dim": 768,
+                    "encoder_attention_heads": 4,
+                    "attention_dropout": 0.1,
+                    "num_aatypes": 22,
+                    "aatype_padding_idx": 0,
+                    "aatype_mask_idx": 22,
+                    "aatype_x_idx": 21,
+                    "gvp": {
+                        "attention_heads": 0,
+                        "conditioning_encoder": true,
+                        "conditioning_score_num_rbf": 16,
+                        "conv_no_scalar_activation": false,
+                        "conv_no_vector_activation": false,
+                        "distance_noise": 0.0,
+                        "dropout": 0.1,
+                        "edge_hidden_dim_scalar": 32,
+                        "edge_hidden_dim_vector": 1,
+                        "edge_input_dim_scalar": 34,
+                        "edge_input_dim_vector": 1,
+                        "eps": 0.0001,
+                        "ignore_edges_without_coords": true,
+                        "layernorm": true,
+                        "n_edge_gvps": 0,
+                        "n_edge_gvps_first_layer": 0,
+                        "n_message_gvps": 3,
+                        "no_edge_orientation": false,
+                        "node_hidden_dim_scalar": 384,
+                        "node_hidden_dim_vector": 128,
+                        "node_input_dim_scalar": 7,
+                        "node_input_dim_vector": 3,
+                        "num_encoder_layers": 4,
+                        "top_k_neighbors": 30,
+                        "vector_gate": true
+                    }
+                }
+            },
+            "structure_module_2d": {
+                "num_layer": 6,
+                "predict_side_chain": false,
+                "detach_affine": true,
+                "share_params": true,
+                "angle_norm_weight": 0.01,
+                "chi_weight": 0.5,
+                "clash_overlap_tolerance": 1.5,
+                "compute_in_graph_metrics": true,
+                "dropout": 0.1,
+                "single_channel": 256,
+                "pair_channel": 256,
+                "num_channel": 256,
+                "num_head": 12,
+                "num_layer_in_transition": 3,
+                "num_point_qk": 4,
+                "num_point_v": 8,
+                "num_scalar_qk": 16,
+                "num_scalar_v": 16,
+                "position_scale": 10.0,
+                "structural_violation_loss_weight": 0.0,
+                "violation_tolerance_factor": 12.0,
+                "weight": 1.0
+            }
+        },
+        "diff_model": {
+            "single_encoder": {
+                "max_enlarge_seq_len": 500000,
+                "enlarge_seq_channel": 64,
+                "single_channel": 256,
+                "condition_embedding": true,
+                "extra_attention": false,
+                "ffn_embed_dim": 384,
+                "attention_heads": 4,
+                "dropout": 0.1,
+                "layers": 3,
+                "position_padding_idx": 0
+            },
+            "pair_encoder": {
+                "pair_res_rel": 32,
+                "pair_res_channel": 64,
+                "pair_chain_rel": 5,
+                "pair_chain_channel": 64,
+                "rbf_encode": true,
+                "num_rbf": 16,
+                "tri_encode": true,
+                "tri_num": 4,
+                "pair_FG_channel": 128,
+                "condition_embedding": true,
+                "pair_channel": 256,
+                "dropout": 0.1
+            },
+            "evoformer":{
+                "layers_2d": 8,
+                "evoformer_checkpoint": 8,
+                "evoformer_block": {
+                    "msa_row_attention_with_pair_bias": {
+                        "dropout_rate": 0.15,
+                        "gating": true,
+                        "num_head": 8,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    },
+                    "msa_transition": {
+                        "dropout_rate": 0.0,
+                        "num_intermediate_factor": 4,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    },
+                    "outer_product_mean": {
+                        "first": false,
+                        "chunk_size": 128,
+                        "dropout_rate": 0.0,
+                        "num_outer_channel": 32,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    },
+                    "triangle_attention_starting_node": {
+                        "dropout_rate": 0.25,
+                        "gating": true,
+                        "num_head": 4,
+                        "orientation": "per_row",
+                        "shared_dropout": true,
+                        "out_single": false
+                    },
+                    "triangle_attention_ending_node": {
+                        "dropout_rate": 0.25,
+                        "gating": true,
+                        "num_head": 4,
+                        "orientation": "per_column",
+                        "shared_dropout": true,
+                        "out_single": false
+                    },
+                    "triangle_multiplication_outgoing": {
+                        "dropout_rate": 0.25,
+                        "equation": "...ikc,...jkc->...ijc",
+                        "outgoing":true,
+                        "num_intermediate_channel": 256,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    },
+                    "triangle_multiplication_incoming": {
+                        "dropout_rate": 0.25,
+                        "equation": "...kjc,...kic->...ijc",
+                        "outgoing":false,
+                        "num_intermediate_channel": 256,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    },
+                    "pair_transition": {
+                        "dropout_rate": 0.0,
+                        "num_intermediate_factor": 4,
+                        "orientation": "per_row",
+                        "shared_dropout": true
+                    } 
+                }
+            },
+            "structure_module": {
+                "num_layer": 6,
+                "predict_side_chain": false,
+                "detach_affine": true,
+                "share_params": true,
+                "angle_norm_weight": 0.01,
+                "chi_weight": 0.5,
+                "clash_overlap_tolerance": 1.5,
+                "compute_in_graph_metrics": true,
+                "dropout": 0.1,
+                "single_channel": 256,
+                "pair_channel": 256,
+                "num_channel": 256,
+                "num_head": 12,
+                "num_layer_in_transition": 3,
+                "num_point_qk": 4,
+                "num_point_v": 8,
+                "num_scalar_qk": 16,
+                "num_scalar_v": 16,
+                "position_scale": 10.0,
+                "structural_violation_loss_weight": 0.0,
+                "violation_tolerance_factor": 12.0,
+                "weight": 1.0
+            },
+            "distogram_pred":{
+                "distogram_args": [0, 22, 64],
+                "pred_all_dist": true,
+                "atom3_dist": false,
+                "ca_dist": true
+            }
+        },
+        "gvp_discriminator": {
+            "final_pred": false,
+            "traj_weight": 0.5,
+            "dropout": 0.1,
+            "encoder_layers": 4,
+            "encoder_embed_dim": 256,
+            "encoder_ffn_embed_dim": 384,
+            "encoder_attention_heads": 4,
+            "attention_dropout": 0.1,
+            "num_aatypes": 22,
+            "aatype_padding_idx": 0,
+            "aatype_mask_idx": 22,
+            "aatype_x_idx": 21,
+            "gvp": {
+                "attention_heads": 0,
+                "conditioning_encoder": true,
+                "conditioning_score_num_rbf": 16,
+                "conv_no_scalar_activation": false,
+                "conv_no_vector_activation": false,
+                "distance_noise": 0.0,
+                "dropout": 0.1,
+                "edge_hidden_dim_scalar": 32,
+                "edge_hidden_dim_vector": 1,
+                "edge_input_dim_scalar": 34,
+                "edge_input_dim_vector": 1,
+                "eps": 0.0001,
+                "ignore_edges_without_coords": true,
+                "layernorm": true,
+                "n_edge_gvps": 0,
+                "n_edge_gvps_first_layer": 0,
+                "n_message_gvps": 3,
+                "no_edge_orientation": false,
+                "node_hidden_dim_scalar": 384,
+                "node_hidden_dim_vector": 128,
+                "node_input_dim_scalar": 7,
+                "node_input_dim_vector": 3,
+                "num_encoder_layers": 4,
+                "top_k_neighbors": 30,
+                "vector_gate": true
+            }
+        },
+        "trans_discriminator": {
+            "max_seq_len": 5000,
+            "single_channel": 256,
+            "ffn_embed_dim": 384,
+            "attention_heads": 4,
+            "dropout": 0.1,
+            "layers": 3,
+            "position_padding_idx": 0
+        },
+        "localenv_discriminator": {
+            "node_features": 128,
+            "edge_features": 128,
+            "hidden_dim": 128,
+            "num_encoder_layers": 3,
+            "k_neighbors": 20
+        }
+    },
+    "train": {
+        "anneal_power": 2.0,
+        "weight_decay": 0.0,
+        "init_lr": 0.001,
+        "lr": 0.001,
+        "fp16":false,
+        "bfp16":false,
+        "scheduler": {
+            "style": "sqrt",
+            "init_value": 0.0001,
+            "peak_value": 0.0001,
+            "warmup_steps": 10000,
+            "transition_steps": 50000,
+            "decay_rate":0.95,
+            "transition_begin": 49000
+        },
+        "betas": [0.9, 0.999],
+        "num_steps": 10000000,
+        "num_epochs": 10000000,
+        "num_train_samples": 1000000,
+        "num_eval_samples": 2000,
+        "eval_every": 1000,
+        "checkpoint_every": 1000,
+        "grad_clip_thresh": 1.0,
+        "log_every": 1,
+        "update_every": 1,
+        "no_ema":true,
+        "ema_decay":0.999,
+        "start_loss_scale": 32,
+        "epoch_milestones": [10000000]
+    },
+    "dtrain": {
+        "anneal_power": 2.0,
+        "weight_decay": 0.0,
+        "init_lr": 0.0001,
+        "lr": 0.0001,
+        "fp16":false,
+        "bfp16":false,
+        "scheduler": {
+            "style": "sqrt",
+            "init_value": 0.00001,
+            "peak_value": 0.00001,
+            "warmup_steps": 10000,
+            "trandsition_steps": 50000,
+            "decay_rate":0.95,
+            "transition_begin": 49000
+        },
+        "betas": [0.9, 0.999],
+        "num_steps": 10000000,
+        "num_epochs": 10000000,
+        "num_train_samples": 1000000,
+        "num_eval_samples": 2000,
+        "eval_every": 1000,
+        "checkpoint_every": 3,
+        "grad_clip_thresh": 1.0,
+        "log_every": 1,
+        "update_every": 1,
+        "no_ema":true,
+        "ema_decay":0.999,
+        "start_loss_scale": 32,
+        "epoch_milestones": [10000000]
+    }
+    
+}
