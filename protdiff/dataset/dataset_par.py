@@ -22,6 +22,7 @@ sys.path.append("pdb_utils/data_parser")
 from protein_coord_parser_new import PoteinCoordsParser
 
 sys.path.append("pdb_utils")
+from pysketch import gen_peptides_ref_native_peptides, gen_peptides_zero_mass_center_peptides, SS3_num_to_name, parse_sstypefile
 from calc_dssp import get_feature_from_dssp, preprocess_dssp_df, ENCODESS32NUM
 
 
