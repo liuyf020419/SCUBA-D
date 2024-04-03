@@ -1,5 +1,5 @@
 # SCUBA-D
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10903437.svg)](https://doi.org/10.5281/zenodo.10903437)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10911359.svg)](https://doi.org/10.5281/zenodo.10911359)
 
 
 SCUBA-D: De novo protein design with a denoising diffusion network independent of pre-trained structure prediction models
@@ -38,7 +38,7 @@ All controls of the design are set in a JSON file. For convenience, we have prov
 * `demo_json/gen_from_noise/gen_from_all_sstype.json` - generation with provided secondary structure as prior
 * `demo_json/gen_from_noise/gen_from_noise_partial_fixed.json` - unconditional generation but fix some coordinates of motifs
 * `demo_json/refine_prior/structure_refine.json` - refine the provided structure.
-We used the SCUBA suite to generate input files. [SCUBA](https://github.com/USTCwangsheng/pySCUBA) can be installed from https://github.com/USTCwangsheng/pySCUBA or https://doi.org/10.5281/zenodo.10903437.
+We used the SCUBA suite to generate input files. [SCUBA](https://github.com/USTCwangsheng/pySCUBA) can be installed from https://github.com/USTCwangsheng/pySCUBA or https://doi.org/10.5281/zenodo.10911359.
 
 
 Users can also create their own templates by changing the parser in `protdiff/dataset/refine_dataset_par.py`.
