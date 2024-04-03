@@ -4,7 +4,7 @@
 
 SCUBA-D: De novo protein design with a denoising diffusion network independent of pre-trained structure prediction models
 
-SCUBA-D is a method based on deep learning for generating protein structure backbone. Here we published the source code and the demos for SCUBA-D.
+SCUBA-D is a method based on deep learning for generating protein structure backbone. Here we published the source code and the demos for SCUBA-D(version 1.0).
 
 To run SCUBA-D, clone this GitHub repository and install Python.
 
@@ -17,7 +17,7 @@ pip install -r ./install/requirements.txt
 bash ./install/postInstall.sh
 ```
 
-Optimal, the SCUBA software can be downloaded and installed from  zenodo: https://doi.org/10.5281/zenodo.10903437 or github: https://github.com/USTCwangsheng/pySCUBA if you wish to utilize it for generating an initial structure(sketch) as input for SCUBA-D.
+Optimal, the SCUBA(SCUBA-sketch) software can be downloaded and installed from zenodo: https://doi.org/10.5281/zenodo.10903437 or github: https://github.com/USTCwangsheng/pySCUBA if you wish to utilize it for generating an initial structure(sketch) as input for SCUBA-D.
 
 ## Quick start
 
