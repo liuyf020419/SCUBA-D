@@ -89,7 +89,7 @@ class PriorDDPM(nn.Module):
         device = batch['traj_pos'].device
         make_mask(batch['len'], batchsize, L, batch)
 
-        for epoch_idx in trange(epoch):
+        for epoch_idx in range(epoch):
             mu_dict = self.prior_module.sampling(batch, pdb_prefix, noising_mode_idx, condition, epoch_idx=epoch_idx, return_traj=return_traj)
             diffused_coord_0 = self.diff_module.sampling(
                 batch, pdb_prefix, diff_step, mu_dict, return_traj, ddpm_fix=ddpm_fix, rigid_fix=rigid_fix, term_num=epoch_idx, diff_noising_scale=diff_noising_scale)
