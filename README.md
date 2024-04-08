@@ -1,5 +1,5 @@
 # SCUBA-D
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10938278.svg)](https://doi.org/10.5281/zenodo.10938278)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10939749.svg)](https://doi.org/10.5281/zenodo.10939749)
 
 
 SCUBA-D: De novo protein design with a denoising diffusion network independent of pre-trained structure prediction models
@@ -22,7 +22,7 @@ pip install -r ./install/requirements.txt
 bash ./install/postInstall.sh
 ```
 
-Optimal, the SCUBA(SCUBA-sketch) software can be downloaded and installed from zenodo: https://doi.org/10.5281/zenodo.10938278 or github: https://github.com/USTCwangsheng/pySCUBA if you wish to utilize it for generating an initial structure(sketch) as input for SCUBA-D.
+Optimal, the SCUBA(SCUBA-sketch) software can be downloaded and installed from zenodo: https://doi.org/10.5281/zenodo.10939749 or github: https://github.com/USTCwangsheng/pySCUBA if you wish to utilize it for generating an initial structure(sketch) as input for SCUBA-D.
 
 ## Quick start
 
@@ -33,7 +33,6 @@ The following options are suggested to be manually changed according to your nee
 
 * `CUDA_VISIBLE_DEVICES` - visible GPU idx
 * `test_list` - list of designs
-* `max_sample_num` - maximum number of runs in the list, default is 10,000,000.
 * `batch_size` - number of designs for each batch
 
 
@@ -43,7 +42,7 @@ All controls of the design are set in a JSON file. For convenience, we have prov
 * `demo_json/gen_from_noise/gen_from_all_sstype.json` - generation with provided secondary structure as prior
 * `demo_json/gen_from_noise/gen_from_noise_partial_fixed.json` - unconditional generation but fix some coordinates of motifs
 * `demo_json/refine_prior/structure_refine.json` - refine the provided structure.
-We used the SCUBA suite to generate input files. [SCUBA](https://github.com/USTCwangsheng/pySCUBA) can be installed from https://github.com/USTCwangsheng/pySCUBA or https://doi.org/10.5281/zenodo.10938278.
+We used the SCUBA suite to generate input files. [SCUBA](https://github.com/USTCwangsheng/pySCUBA) can be installed from https://github.com/USTCwangsheng/pySCUBA or https://doi.org/10.5281/zenodo.10939749.
 
 
 Users can also create their own templates by changing the parser in `protdiff/dataset/refine_dataset_par.py`.
@@ -61,8 +60,7 @@ bash run.sh
 Output example in target dir `results`:
 ```
 gen_from_all_noise.json
-gen_from_all_noise_diff_term_2_scale_0.1_batch_0.pdb
-gen_from_all_noise_diff_term_2_scale_0.1_batch_1.pdb
+gen_from_all_noise_batch_0.pdb
 ```
 
 -----------------------------------------------------------------------------------------------------

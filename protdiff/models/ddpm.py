@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 kabschalign = KabschCycleAlign()
 predictor = load_esm1b_projection_head()
 
+output_step=3
 
 class DDPM(nn.Module):
     def __init__(self, config, global_config) -> None:
@@ -225,7 +226,6 @@ class DDPM(nn.Module):
             affine_tensor_t = affine7_to_affine6(mu_dict['affine']) + affine_tensor_noise * self.affine_tensor_scale.to(device)
             affine_t = affine6_to_affine7(affine_tensor_t)
 
-            # import pdb; pdb.set_trace()
             if not ddpm_fix:
                 affine_t = torch.where(batch['condition'][..., None]==1, batch['traj_affine'][..., 0, :], affine_t)
 
@@ -260,7 +260,6 @@ class DDPM(nn.Module):
         if t_scheme[-1] != 0:
             t_scheme.append(0)
             
-        # for t_idx, t in enumerate(t_scheme):
         for t_idx in range(len(t_scheme)):
             t = t_scheme[t_idx]
             t = torch.LongTensor([t] * batch_size).to(device)
@@ -281,7 +280,7 @@ class DDPM(nn.Module):
                 batch['gt_pos'][..., :3, :], batch['seq_mask'], 
                 fape_condition)
 
-            if t[0] == 3:
+            if t[0] == output_step:
                 for batch_idx in range(batch_size):
                     coords_list = []
                     for chain_label in reduced_chain_label:
@@ -290,8 +289,8 @@ class DDPM(nn.Module):
                         )
 
                     write_multichain_from_atoms(coords_list,
-                        f'{pdb_prefix}_diff_term_{term_num}_scale_{diff_noising_scale}_batch_{batch_idx}.pdb', natom=4)
-                    return_pdbfiles.append(f'{pdb_prefix}_diff_term_{term_num}_scale_{diff_noising_scale}_batch_{batch_idx}.pdb')
+                        f'{pdb_prefix}_batch_{batch_idx}.pdb', natom=4)
+                    return_pdbfiles.append(f'{pdb_prefix}_batch_{batch_idx}.pdb')
                     
             if ddpm_fix:
                 if fix_condition is not None:
@@ -321,8 +320,6 @@ class DDPM(nn.Module):
                 x_t_1_dict = self.q_sample(x0_dict, t, mu_dict, noising_scale=diff_noising_scale)
             batch['xt_dict'] = x_t_1_dict
             
-        # logger.info(f'term: {term_num}; generated')
-        # return x0_dict
         batch['last_pdbfiles'] = return_pdbfiles
         return add_c_beta_from_crd(pred_x0_dict['coord'][0])
     

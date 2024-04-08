@@ -27,14 +27,6 @@ logging.basicConfig(
 logger= logging.getLogger(__name__)
 
 
-noising_mode_dict = {
-        'refine_prior': 0, 
-        'gen_from_noise': 2,
-        'loopsampling': 2,
-        'structure_gen_from_sstype': 4
-        }
-
-
 model_name = 'priorDDPM_full_ESM_GAN'
 
 def build_parser():
@@ -47,7 +39,7 @@ def build_parser():
     parser.add_argument('--gen_tag', type=str, default='', help='gen_tag')
     parser.add_argument('--seed', type=int, default=1234, help='Seed for PyTorch random number generators')
     parser.add_argument('--sample_from_raw_pdbfile', action='store_true', help='sample from raw pdbfile or processed file')
-    parser.add_argument('--max_sample_num', type=int, default=10000000, help='maximum number of samples for testing or application')
+    parser.add_argument('--max_task_num', type=int, default=10000000, help='maximum number of samples for testing or application')
     
     parser.add_argument('--noising_mode', type=str, default=None, help='noising mode for testing model')
     parser.add_argument('--rmsd_cutoff', type=str, default=None, help='rmsd_cutoff for testing model (FROMAT: MINRMSD+MAXRMSD)')
@@ -57,9 +49,8 @@ def build_parser():
     parser.add_argument('--pdb_root', type=str, default=None, help='pdb root for application')
     parser.add_argument('--return_traj', action='store_true', help='write pdb file when testing model')
     parser.add_argument('--update_init_traj', action='store_true', help='update initial traj per epoch')
-    parser.add_argument('--batch_size', type=int, default=1, help='batchsize for each protein')
+    parser.add_argument('--batch_size', type=int, default=1, help='parallel number for each task')
     parser.add_argument('--diff_noising_scale', type=float, default=1.0, help='noising scale for diffusion')
-    parser.add_argument('--iterate_mode', type=str, default='structure_gen_from_sstype', help='iterate mode')
 
     return parser
 
@@ -125,11 +116,11 @@ def main(args):
     dataset = ProtDiffParDataset(config, args.test_list, batch_size=args.batch_size)
     count = 0
 
-    if (len(dataset) < args.max_sample_num):
-        args.max_sample_num = len(dataset)
+    if (len(dataset) < args.max_task_num):
+        args.max_task_num = len(dataset)
 
     for data in tqdm(dataset):
-        if count >= args.max_sample_num:
+        if count >= args.max_task_num:
             break
         count+=1
         name = pdbname = data['pdbname']
@@ -157,7 +148,6 @@ def main(args):
 
         with torch.no_grad():
             noising_mode_idx = batch['noising_mode'][0]
-            iterate_mode_idx = noising_mode_dict[args.iterate_mode]
             fix_condition = torch.tensor(batch['fix_condition'][0])
 
             batch = expand_batch(batch, args.batch_size)
@@ -166,8 +156,7 @@ def main(args):
                 noising_mode_idx, fix_condition, 
                 return_traj=args.return_traj, 
                 epoch=args.epoch_num,
-                diff_noising_scale=args.diff_noising_scale, 
-                iterate_mode=iterate_mode_idx)
+                diff_noising_scale=args.diff_noising_scale)
 
 
 if __name__=='__main__':

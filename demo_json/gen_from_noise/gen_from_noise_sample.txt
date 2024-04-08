@@ -1,3 +1,0 @@
-demo/gen_from_noise/gen_from_all_noise.json
-demo/gen_from_noise/gen_from_all_sstype.json
-demo/gen_from_noise/gen_from_noise_partial_fixed.json

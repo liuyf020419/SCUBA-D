@@ -1,5 +1,6 @@
 import logging
 import sys, os
+from tqdm import trange
 import numpy as np
 
 import torch
@@ -81,15 +82,14 @@ class PriorDDPM(nn.Module):
         rigid_fix=False, 
         epoch=1, 
         diff_noising_scale=1.0, 
-        iterate_mode=0
+        iterate_mode=4
         ):
         
         batchsize, L, N, _ = batch['traj_pos'].shape
         device = batch['traj_pos'].device
         make_mask(batch['len'], batchsize, L, batch)
 
-        for epoch_idx in range(epoch):
-            # logger.info(f'epoch: {epoch_idx}/{epoch-1};')
+        for epoch_idx in trange(epoch):
             mu_dict = self.prior_module.sampling(batch, pdb_prefix, noising_mode_idx, condition, epoch_idx=epoch_idx, return_traj=return_traj)
             diffused_coord_0 = self.diff_module.sampling(
                 batch, pdb_prefix, diff_step, mu_dict, return_traj, ddpm_fix=ddpm_fix, rigid_fix=rigid_fix, term_num=epoch_idx, diff_noising_scale=diff_noising_scale)
@@ -122,8 +122,6 @@ class PriorDDPM(nn.Module):
                 batch['traj_pos_ss'] = traj_pos
                 batch['traj_backbone_frame_ss'] = traj_frame
                 
-            if (epoch_idx < (epoch-1)):
-                os.system(f'rm -rf {pdb_prefix}_diff_term_{epoch_idx}_*')
 
 def make_noise_from_sstype(sstype, noise_scale=2.0):
     ss3type = sstype[0]
