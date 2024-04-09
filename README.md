@@ -22,7 +22,7 @@ pip install -r ./install/requirements.txt
 bash ./install/postInstall.sh
 ```
 
-Optimal, the SCUBA(SCUBA-sketch) software can be downloaded and installed from zenodo: https://doi.org/10.5281/zenodo.10939749 or github: https://github.com/USTCwangsheng/pySCUBA if you wish to utilize it for generating an initial structure(sketch) as input for SCUBA-D.
+Optimal, the SCUBA(SCUBA-sketch) software can be downloaded and installed from zenodo: https://doi.org/10.5281/zenodo.10947360 or github: https://github.com/USTCwangsheng/pySCUBA if you wish to utilize it for generating an initial structure(sketch) as input for SCUBA-D.
 
 ## Quick start
 
