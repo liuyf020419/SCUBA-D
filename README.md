@@ -1,5 +1,5 @@
 # SCUBA-D
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10939749.svg)](https://doi.org/10.5281/zenodo.10939749)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10947360.svg)](https://doi.org/10.5281/zenodo.10947360)
 
 
 SCUBA-D: De novo protein design with a denoising diffusion network independent of pre-trained structure prediction models
